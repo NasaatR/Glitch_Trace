@@ -66,7 +66,7 @@ try {
     if (Test-Path dist/docs) { Remove-Item dist/docs -Recurse -Force }
     Copy-Item docs dist/docs -Recurse
     $report = [ordered]@{
-        schema_version = 1; package_version = ((Select-String Cargo.toml '^version = "(.+)"$').Matches.Groups[1].Value)
+        schema_version = 1; package_version = ((Select-String -Path Cargo.toml -Pattern '^version = "(.+)"$').Matches.Groups[1].Value)
         build_id = $env:GLITCHTRACE_BUILD_SHA; target = 'Windows x64'; vendored_offline_build = [bool]$Offline
         source_checks = 'format, tests, clippy, release link'; pe_and_windows_load = 'passed'
         installer_lifecycle = $(if ($RunInstallerChecks) {'passed on this build host'} else {'not run'})
