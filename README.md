@@ -8,6 +8,16 @@ feature set. Exact detection, appearance and performance parity have **not** bee
 verified. This preview has not been loaded in After Effects. See
 [reference analysis](docs/REFERENCE_ANALYSIS.md) for the evidence and gaps.
 
+## Continue development from another account
+
+Read [Start here](docs/START_HERE.md) and [AGENTS.md](AGENTS.md), then the current
+[project state](PROJECT_STATE.md) and [handoff log](docs/HANDOFF_LOG.md).
+The [roadmap](docs/ROADMAP.md) separates baseline fidelity from later text/background
+features. Use [sequential coordination](docs/COORDINATION.md); one account writes
+at a time. Original reference/AE access must be supplied separately as described
+in [reference inputs](docs/REFERENCE_INPUTS.md). Check [release instructions](docs/RELEASING.md)
+before issuing another binary; Preview 1 publication is currently hardcoded.
+
 ## Download and install
 
 Download the installer from [Releases](https://github.com/NasaatR/Glitch_Trace/releases).

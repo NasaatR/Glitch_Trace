@@ -6,7 +6,21 @@ User requested an independently editable native effect matching the functionalit
 of the supplied MyTracePlugin.aex, published as GlitchTrace in
 https://github.com/NasaatR/Glitch_Trace. Additional text/background features are
 explicitly deferred until the baseline. Existing repository is public; preserve
-visibility. Default branch: main. Observed base: eabdb4d9b5ee945801d61bec579940bf74eb5daa.
+visibility. Default branch: main. Initial repository base: eabdb4d9b5ee945801d61bec579940bf74eb5daa.
+
+## Sequential session handoff
+
+- Status: **ready for next session**.
+- Active owner: **none**; the user selects the next account. One writer at a time.
+- Observed source head before this documentation handoff:
+  aff2c833adb03ec35cc0a71ecb654b2e1822cfc7.
+- Start: AGENTS.md -> docs/START_HERE.md -> current state -> latest HANDOFF_LOG.
+- Coordination: docs/COORDINATION.md; update this owner/status at takeover/handback.
+- Plan: docs/ROADMAP.md (M0-M5 baseline; M6 requested text/background; M7 expansion).
+- Inputs: docs/REFERENCE_INPUTS.md. Original AEX is not in GitHub; attach it to
+  the incoming chat and verify its digest. Account/host access is not transferred.
+- Release caution: docs/RELEASING.md. Current workflow is hardcoded to Preview 1;
+  a later code push does not automatically replace the public installer.
 
 ## Decisions
 
@@ -54,9 +68,12 @@ capabilities. See docs/REFERENCE_ANALYSIS.md and docs/HOST_CHECKS.md.
 
 ## Next action
 
-Run the AE host acceptance and side-by-side reference comparison on a saved test
-project. Capture defaults/detection/ordering and compare representative rendered
-frames. Close the known SmartFX/32-bpc/MFR/GPU and visual parity gaps before calling
-the baseline complete. Keep new text/background functionality deferred.
+Incoming session: fetch current main, read the handoff route and start ROADMAP M0.
+Establish actual AE load/render on a saved synthetic/test project; fix the first
+blocking regression with the original error and environment captured. If host or
+reference access is absent, collect the dependent evidence while continuing
+independent baseline work. Then follow M1-M5 before declaring full fidelity; keep
+new text/background functionality deferred until the baseline or explicit user
+reprioritization. Record the result, release/checks and next step before handback.
 On resume inspect the current main head, this record and the exact successful
 workflow/release target before changing anything. Do not claim 100% parity.
