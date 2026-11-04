@@ -72,3 +72,7 @@ Dates below use the user's Europe/Moscow calendar date.
 - Next: incoming agent starts M0 from the private workspace, follows supplied
   preferences, and maintains source/state without automatic return ZIPs.
 - Session: ready for archive-only session; originating GitHub runtime work paused.
+
+- Archive recovery edge case: vendored source files can have pre-1980 timestamps.
+  ZIP packing clamps unsupported timestamp metadata while preserving file bytes;
+  the request-only roundtrip fixture now covers a Unix-epoch vendor file.

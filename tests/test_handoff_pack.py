@@ -1,6 +1,7 @@
 """Meaningful archive integrity/recovery checks, no network or Git required."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -30,6 +31,8 @@ class HandoffTests(unittest.TestCase):
         (self.project/'target'/'cache').write_text('exclude')
         (self.project/'vendor'/'fixture').mkdir(parents=True)
         (self.project/'vendor'/'fixture'/'public-test.pem').write_text('public vendor fixture')
+        # Registry source archives can legitimately carry Unix-epoch mtimes.
+        os.utime(self.project/'vendor'/'fixture'/'public-test.pem', (0,0))
         baseline = {'archive_start_sha256':{'changed.rs':hashlib.sha256(b'old').hexdigest(),'deleted.rs':'old'},'vendor_start_sha256':{}}
         (self.work/'handoff'/'source_baseline.json').write_text(json.dumps(baseline))
     def tearDown(self): self.temp.cleanup()

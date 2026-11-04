@@ -72,7 +72,7 @@ def main():
     temporary = output.with_suffix(output.suffix+'.partial')
     if temporary.exists(): parser.error('A partial output exists; inspect it before retrying.')
     try:
-        with zipfile.ZipFile(temporary, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+        with zipfile.ZipFile(temporary, 'w', zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False) as z:
             for p, n in included: z.write(p, 'GlitchTrace_Offline_Workspace/'+n)
             z.writestr('GlitchTrace_Offline_Workspace/handoff/RETURN_REPORT.json', json.dumps(report, indent=2))
             z.writestr('GlitchTrace_Offline_Workspace/handoff/RETURN_MANIFEST.json', json.dumps(manifest, indent=2))
