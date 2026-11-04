@@ -29,13 +29,15 @@ reference inventory and explicit parity matrix.
 
 ## Verification and remaining acceptance
 
-Nine synthetic renderer tests passed locally. Windows x64 native adapter passed
-cross-target cargo check and clippy. These do not establish final Windows linking,
-PiPL compilation, installation or AE execution. Windows CI/build status must be
-updated after the first push. No actual AE host or original-vs-new renders are
+Nine synthetic renderer tests passed locally and on Windows. Windows native
+adapter passed clippy and release compilation; actual PE exports and PiPL passed.
+The first CI run stopped during packaging due to Python using Windows cp1252 for
+a UTF-8 dependency manifest. Explicit UTF-8 reads and native-command exit handling
+were corrected; the next CI run must verify packaging and installation. No actual AE host or original-vs-new renders are
 available in this session. Exact original CPU detection rules, defaults/ranges,
 quality sampling and font metrics are unknown. GPU/performance/pixel/temporal
-parity remains unverified; see docs/REFERENCE_ANALYSIS.md and docs/HOST_CHECKS.md.
+parity remains unverified. The original PiPL explicitly declares SmartFX, float
+color and MFR, which are known missing capabilities in this preview; see docs/REFERENCE_ANALYSIS.md and docs/HOST_CHECKS.md.
 
 ## Next action
 

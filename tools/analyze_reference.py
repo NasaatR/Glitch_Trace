@@ -17,9 +17,19 @@ end = b.find(b"Couldn't load suite.\0", start)
 assert start >= 0 and end > start, 'Expected reference UI strings were not found'
 labels = [m.group().decode('ascii') for m in re.finditer(rb'[ -~]{3,}', b[start:end])]
 uniforms = sorted(set(m.group(1).decode('ascii') for m in re.finditer(rb'uniform\s+(?:sampler2D|float|int|bool|vec4|mat4)\s+([A-Z_a-z0-9]+)\s*;', b)))
+def pipl_u32(marker):
+    p = b.find(marker)
+    if p < 0 or b[p+12:p+16] != b'\x04\0\0\0': return None
+    return struct.unpack_from('<I', b, p+16)[0]
+flags2 = pipl_u32(b'MIB82LGe')
 print(json.dumps({
     'sha256': hashlib.sha256(b).hexdigest(),
     'bytes': len(b),
+    'pipl_outflags': pipl_u32(b'MIB8OLGe'),
+    'pipl_outflags2': flags2,
+    'declared_smartfx': bool(flags2 is not None and flags2 & (1 << 10)),
+    'declared_float_color': bool(flags2 is not None and flags2 & (1 << 12)),
+    'declared_threaded_rendering': bool(flags2 is not None and flags2 & (1 << 27)),
     'machine': hex(struct.unpack_from('<H', b, pe+4)[0]),
     'pe_timestamp_unverified_utc': datetime.datetime.fromtimestamp(struct.unpack_from('<I', b, pe+8)[0], datetime.timezone.utc).isoformat(),
     'identity_markers': [x for x in ['DRAGOY Tracery','Tracery','Dragoy','GLator.aex'] if x.encode() in b],

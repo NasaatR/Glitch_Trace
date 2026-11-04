@@ -5,7 +5,7 @@ import shutil
 import tomllib
 
 root = Path(__file__).resolve().parents[1]
-lock = tomllib.loads((root/'Cargo.lock').read_text())
+lock = tomllib.loads((root/'Cargo.lock').read_text(encoding='utf-8'))
 cache = Path(os.environ.get('CARGO_HOME', Path.home()/'.cargo'))/'registry'/'src'
 out = root/'dist'/'third-party-licenses'
 out.mkdir(parents=True, exist_ok=True)
@@ -19,7 +19,7 @@ for p in lock['package']:
         raise SystemExit('Missing locked dependency source: '+name)
     source = candidates[0]
     files = [f for f in source.iterdir() if f.is_file() and any(f.name.upper().startswith(k) for k in ('LICENSE','COPYING','NOTICE','UNLICENSE'))]
-    manifest = tomllib.loads((source/'Cargo.toml').read_text())['package']
+    manifest = tomllib.loads((source/'Cargo.toml').read_text(encoding='utf-8'))['package']
     if not files:
         # Some crates ship only a license declaration, not an upstream notice file.
         # When MIT is explicitly offered, bundle its unmodified standard terms
@@ -32,7 +32,7 @@ for p in lock['package']:
     dest.mkdir(exist_ok=True)
     for f in files: shutil.copy2(f, dest/f.name)
     if not files and 'MIT' in manifest.get('license', '').split():
-        terms = (root/'LICENSE').read_text().split('Permission is hereby granted', 1)[1]
+        terms = (root/'LICENSE').read_text(encoding='utf-8').split('Permission is hereby granted', 1)[1]
         authors = ', '.join(manifest.get('authors', [])) or 'See upstream package source'
         (dest/'LICENSE-MIT.txt').write_text(
             'MIT License\nUpstream package authors: '+authors+'\n'

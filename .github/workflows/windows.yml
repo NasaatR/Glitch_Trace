@@ -35,7 +35,9 @@ jobs:
           Copy-Item target/release/glitchtrace.dll dist/GlitchTrace.aex
           Copy-Item target/release/glitchtrace-diagnostics.exe dist/
           python tools/verify_pe.py dist/GlitchTrace.aex
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cargo fetch --locked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/collect_licenses.py
       - name: Build installer
         shell: pwsh
@@ -46,6 +48,7 @@ jobs:
         shell: pwsh
         run: |
           python tools/check_windows_load.py dist/GlitchTrace.aex
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $setup = (Resolve-Path dist/*_setup.exe).Path
           $installDir = Join-Path $env:RUNNER_TEMP 'GlitchTrace-install-check'
           $args = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-',"/DIR=$installDir")
@@ -64,8 +67,9 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item README.md,LICENSE,THIRD_PARTY_NOTICES.md dist/
-          Copy-Item docs/HOST_CHECKS.md dist/
-          $files = @('dist/GlitchTrace.aex','dist/glitchtrace-diagnostics.exe','dist/README.md','dist/LICENSE','dist/THIRD_PARTY_NOTICES.md','dist/HOST_CHECKS.md','dist/third-party-licenses')
+          Copy-Item docs dist/docs -Recurse
+          Copy-Item PROJECT_STATE.md dist/
+          $files = @('dist/GlitchTrace.aex','dist/glitchtrace-diagnostics.exe','dist/README.md','dist/LICENSE','dist/THIRD_PARTY_NOTICES.md','dist/docs','dist/PROJECT_STATE.md','dist/third-party-licenses')
           Compress-Archive -Path $files -DestinationPath dist/GlitchTrace_v1.0-preview.1_windows-x64_portable.zip
           Get-FileHash dist/*.exe,dist/*.aex,dist/*.zip -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" } | Set-Content dist/SHA256SUMS.txt
       - uses: actions/upload-artifact@v7.0.2

@@ -13,6 +13,8 @@ The input remains outside this repository. Its inventory is recorded in
 - OpenGL renderer, GLSL 330 shader strings, video/mask/font textures and a uniform
   buffer with 512 bounding boxes. Runtime dependencies include Microsoft Visual
   C++ libraries. The reference contains aescripts licensing and watermark logic.
+- PiPL OutFlags2 is `0x08001400`: SmartFX, float color and threaded rendering
+  are declared. This establishes declared capabilities, not successful host runs.
 - RGB Euclidean color distance is blurred with a square Gaussian kernel.
   A smoothstep over threshold/100 is converted to a binary mask at its midpoint.
 - Graphics order: box fill, box borders, connections, center markers, coordinate
@@ -45,7 +47,7 @@ The input remains outside this repository. Its inventory is recorded in
 | Maximum region count | 512 | Original shader capacity; original CPU cap behavior unknown |
 | 8/16 bpc | Adapter implemented | Windows compilation; AE load/render still required |
 | OpenGL/GPU | Not implemented | CPU reference renderer, no acceleration parity claim |
-| 32 bpc / SmartFX / MFR | Not advertised | Separate host work if needed; reference support not established by strings alone |
+| 32 bpc / SmartFX / MFR | Not advertised | Known parity gap: reference PiPL declares SmartFX/float/MFR; not implemented/advertised here |
 | Temporal identity / motion tracking | Not implemented | Original tracking persistence not established |
 | License/activation/watermark | Not reproduced | Not required for this independent product's image-processing functions |
 | Project/preset migration | Not implemented | Independent match name and parameter IDs |

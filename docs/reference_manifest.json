@@ -1,6 +1,11 @@
 {
   "sha256": "108bb818afc250c4076e24efbb297498e963b4ae97b00455ee2ca298dd5a4f7a",
   "bytes": 6947840,
+  "pipl_outflags": 33588260,
+  "pipl_outflags2": 134222848,
+  "declared_smartfx": true,
+  "declared_float_color": true,
+  "declared_threaded_rendering": true,
   "machine": "0x8664",
   "pe_timestamp_unverified_utc": "2025-04-19T12:51:46+00:00",
   "identity_markers": [

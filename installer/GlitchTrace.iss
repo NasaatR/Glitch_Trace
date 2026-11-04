@@ -32,6 +32,8 @@ InfoBeforeFile=..\docs\INSTALL-NOTICE.txt
 Source: "..\dist\GlitchTrace.aex"; DestDir: "{app}"; Flags: ignoreversion; BeforeInstall: BackupPrevious
 Source: "..\dist\glitchtrace-diagnostics.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\PROJECT_STATE.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\dist\third-party-licenses\*"; DestDir: "{app}\third-party-licenses"; Flags: ignoreversion recursesubdirs createallsubdirs
