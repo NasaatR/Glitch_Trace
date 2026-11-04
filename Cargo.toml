@@ -1,0 +1,22 @@
+[package]
+name = "glitchtrace"
+version = "1.0.0-preview.1"
+edition = "2024"
+license = "MIT"
+rust-version = "1.88"
+repository = "https://github.com/NasaatR/Glitch_Trace"
+description = "Color-region detection and procedural graphics for After Effects"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[target.'cfg(target_os = "windows")'.dependencies]
+after-effects = "=0.4.0"
+
+[build-dependencies]
+pipl = "=0.1.1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "debuginfo"

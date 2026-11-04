@@ -1,0 +1,90 @@
+name: Windows preview
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2025
+    permissions:
+      contents: write
+    env:
+      GLITCHTRACE_BUILD_SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Install Rust stable
+        shell: pwsh
+        run: |
+          rustup update stable --no-self-update
+          rustup default stable
+          rustup component add clippy rustfmt
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Test CPU renderer
+        run: cargo test --locked
+      - name: Check native adapter
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: Build Windows x64 binaries
+        run: cargo build --release --locked
+      - name: Stage and verify plugin
+        shell: pwsh
+        run: |
+          New-Item dist -ItemType Directory -Force | Out-Null
+          Copy-Item target/release/glitchtrace.dll dist/GlitchTrace.aex
+          Copy-Item target/release/glitchtrace-diagnostics.exe dist/
+          python tools/verify_pe.py dist/GlitchTrace.aex
+          cargo fetch --locked
+          python tools/collect_licenses.py
+      - name: Build installer
+        shell: pwsh
+        run: |
+          & 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' installer/GlitchTrace.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Check DLL dependencies and installer lifecycle
+        shell: pwsh
+        run: |
+          python tools/check_windows_load.py dist/GlitchTrace.aex
+          $setup = (Resolve-Path dist/*_setup.exe).Path
+          $installDir = Join-Path $env:RUNNER_TEMP 'GlitchTrace-install-check'
+          $args = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-',"/DIR=$installDir")
+          $first = Start-Process $setup -ArgumentList $args -Wait -PassThru
+          if ($first.ExitCode -ne 0) { throw "Install failed: $($first.ExitCode)" }
+          $expected = (Get-FileHash dist/GlitchTrace.aex).Hash
+          if ((Get-FileHash "$installDir/GlitchTrace.aex").Hash -ne $expected) { throw 'Installed binary differs' }
+          $second = Start-Process $setup -ArgumentList $args -Wait -PassThru
+          if ($second.ExitCode -ne 0) { throw "Reinstall failed: $($second.ExitCode)" }
+          $backups = @(Get-ChildItem "$installDir/Backups/*.aex.bak")
+          if ($backups.Count -ne 1 -or (Get-FileHash $backups[0]).Hash -ne $expected) { throw 'Backup failed' }
+          $remove = Start-Process "$installDir/unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
+          if ($remove.ExitCode -ne 0 -or (Test-Path "$installDir/GlitchTrace.aex")) { throw 'Uninstall failed' }
+          if (-not (Test-Path $backups[0])) { throw 'Uninstall deleted retained backup' }
+      - name: Build portable package and checksums
+        shell: pwsh
+        run: |
+          Copy-Item README.md,LICENSE,THIRD_PARTY_NOTICES.md dist/
+          Copy-Item docs/HOST_CHECKS.md dist/
+          $files = @('dist/GlitchTrace.aex','dist/glitchtrace-diagnostics.exe','dist/README.md','dist/LICENSE','dist/THIRD_PARTY_NOTICES.md','dist/HOST_CHECKS.md','dist/third-party-licenses')
+          Compress-Archive -Path $files -DestinationPath dist/GlitchTrace_v1.0-preview.1_windows-x64_portable.zip
+          Get-FileHash dist/*.exe,dist/*.aex,dist/*.zip -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" } | Set-Content dist/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: GlitchTrace_v1.0-preview.1_windows-x64
+          path: |
+            dist/*_setup.exe
+            dist/*_portable.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+      - name: Publish first preview
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v1.0-preview.1 --json tagName *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host 'This release already exists; artifacts are retained on this run. Existing release assets are never overwritten.'
+            exit 0
+          }
+          gh release create v1.0-preview.1 dist/*_setup.exe dist/*_portable.zip dist/SHA256SUMS.txt --target '${{ github.sha }}' --title 'GlitchTrace 1.0 Preview 1' --notes-file docs/RELEASE_NOTES.md --prerelease
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

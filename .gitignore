@@ -1,0 +1,9 @@
+/target/
+/dist/
+*.aex
+*.pdb
+*.exe
+*.zip
+/reference-private/
+__pycache__/
+*.pyc

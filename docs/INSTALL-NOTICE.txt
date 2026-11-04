@@ -1,0 +1,17 @@
+GlitchTrace 1.0 Preview 1
+
+Independent color-region graphics effect for After Effects.
+Target: Windows 11 x64 and After Effects 25.6 / 26.x.
+
+This is an early preview. It has not been loaded or compared in After Effects.
+It is not certified as pixel-identical to the supplied reference plugin.
+The current renderer uses the CPU and supports 8/16 bpc; GPU, 32 bpc and MFR
+support are not advertised. Use a copy of a project for the first check.
+
+Close After Effects before installing or updating.
+The default shared Adobe plug-ins folder is used by installed AE versions.
+You may select a particular After Effects Plug-ins subfolder instead.
+The original plugin is not replaced. No license, activation, account or network
+connection is required. Existing GlitchTrace binaries are backed up on update.
+
+Made by Nasaat
