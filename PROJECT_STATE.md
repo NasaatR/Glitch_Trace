@@ -10,15 +10,14 @@ visibility. Default branch: main. Initial repository base: eabdb4d9b5ee945801d61
 
 ## Sequential session handoff
 
-- Status: **ready for next session**.
-- Active owner: **none**; the user selects the next account. One writer at a time.
+- Status: **preparing archive-only handoff**.
+- Current route: originating account handles GitHub; receiving account works from a private archive without GitHub. One writer at a time.
 - Observed source head before this documentation handoff:
   aff2c833adb03ec35cc0a71ecb654b2e1822cfc7.
-- Start: AGENTS.md -> docs/START_HERE.md -> current state -> latest HANDOFF_LOG.
-- Coordination: docs/COORDINATION.md; update this owner/status at takeover/handback.
+- Start: if OFFLINE_SESSION.json exists, read the outer START_HERE and docs/OFFLINE_WORK.md first; otherwise use the connected route.
+- Coordination: keep source/state/logs durable. Receiving account makes a return ZIP only on explicit user request; no automatic handback exports.
 - Plan: docs/ROADMAP.md (M0-M5 baseline; M6 requested text/background; M7 expansion).
-- Inputs: docs/REFERENCE_INPUTS.md. Original AEX is not in GitHub; attach it to
-  the incoming chat and verify its digest. Account/host access is not transferred.
+- Inputs: docs/REFERENCE_INPUTS.md. Original AEX is not in GitHub; the private archive includes it, preferences, Playbook and released installers. Verify its digest. Host/build access is not transferred.
 - Release caution: docs/RELEASING.md. Current workflow is hardcoded to Preview 1;
   a later code push does not automatically replace the public installer.
 
@@ -66,9 +65,18 @@ pixel and temporal parity are unverified. Original PiPL declares SmartFX, float
 color and MFR; this preview is CPU 8/16 bpc and does not implement/advertise these
 capabilities. See docs/REFERENCE_ANALYSIS.md and docs/HOST_CHECKS.md.
 
+## Archive-only build support
+
+Standalone Windows build/test/package script: tools/Build-Windows.ps1. Cargo source
+can be vendored for a no-download build; a real Windows Rust/MSVC/Inno environment
+is still required. The receiving agent must not relabel an old installer as a new
+build if that environment is missing. Request-only return helper:
+tools/Pack-Return.py. GitHub CI is being used by the originating account to verify
+the same standalone pipeline; final results must be recorded after that run.
+
 ## Next action
 
-Incoming session: fetch current main, read the handoff route and start ROADMAP M0.
+Incoming archive session: read the outer START_HERE, preferences and OFFLINE_WORK; start ROADMAP M0 without requiring GitHub.
 Establish actual AE load/render on a saved synthetic/test project; fix the first
 blocking regression with the original error and environment captured. If host or
 reference access is absent, collect the dependent evidence while continuing

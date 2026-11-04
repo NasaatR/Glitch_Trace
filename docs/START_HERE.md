@@ -1,5 +1,11 @@
 # Start here: continue GlitchTrace
 
+## Select the access mode
+
+If `OFFLINE_SESSION.json` exists, follow OFFLINE_WORK.md and the outer archive's
+START_HERE. No GitHub connection is required; the connected-session steps below
+are skipped. The user requests a return archive only when explicitly asked.
+
 ## What this project is
 
 Native Windows After Effects effect: color-region detection and procedural boxes,
@@ -42,6 +48,8 @@ changed. First verify access, head, local changes and the relevant prior evidenc
 | `examples/render_fixture.rs` | Repeatable three-region PPM rendered by the real core |
 | `installer/GlitchTrace.iss` | Installer identity, files, backup/update/uninstall behavior |
 | `.github/workflows/windows.yml` | Windows tests/build/PE checks/install lifecycle/packages/first-release publication |
+| `tools/Build-Windows.ps1` | Standalone Windows build/test/package path; no GitHub or Git required |
+| `tools/Pack-Return.py` | Explicit-request offline source/output handback with change/deletion reports |
 | `tools/verify_pe.py` | Static x64 DLL export and PiPL verification |
 | `tools/check_windows_load.py` | Windows LoadLibrary/FreeLibrary only, no AE execution |
 | `tools/collect_licenses.py` | License bundle from locked Cargo sources; explicit UTF-8 reads |

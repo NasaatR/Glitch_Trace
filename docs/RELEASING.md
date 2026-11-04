@@ -42,6 +42,14 @@ Fix/update this mapping as one coherent task before the next binary delivery.
 5. Update publication logic if needed. Existing releases/assets must not be
    overwritten. A docs-only handover does not need a new product version.
 
+## Standalone Windows build
+
+`tools/Build-Windows.ps1` runs the build/tests/package/install lifecycle without
+GitHub or Git. If vendor data is present, it resolves Cargo offline. See
+OFFLINE_WORK.md for the actual Windows toolchain prerequisites and unavailable-
+host behavior. A supplied ready setup has no such development prerequisites.
+The GitHub workflow tests this same script against vendored dependency sources.
+
 ## Windows pipeline contract
 
 `windows-2025` currently supplies Rust, Visual Studio/Windows SDK, Python and

@@ -18,6 +18,11 @@ at a time. Original reference/AE access must be supplied separately as described
 in [reference inputs](docs/REFERENCE_INPUTS.md). Check [release instructions](docs/RELEASING.md)
 before issuing another binary; Preview 1 publication is currently hardcoded.
 
+For archive-only development, see [work without GitHub](docs/OFFLINE_WORK.md).
+`tools/Build-Windows.ps1` builds/tests/packages on an available Windows build host;
+the private transfer can include vendored dependencies. `tools/Pack-Return.py`
+creates a reviewable return workspace only when the user explicitly asks.
+
 ## Download and install
 
 Download the installer from [Releases](https://github.com/NasaatR/Glitch_Trace/releases).

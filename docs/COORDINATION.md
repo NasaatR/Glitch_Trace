@@ -1,6 +1,6 @@
 # Sequential sessions across accounts
 
-GitHub carries source, evidence and state. Chat histories, attachments, local
+For connected sessions GitHub carries source, evidence and state. In the user-selected archive mode, OFFLINE_WORK.md takes precedence: the supplied workspace carries these records, only the originating account handles GitHub, and no return archive is made without an explicit request. Chat histories, attachments, local
 scratch files, credentials, host access and installed skills do not transfer.
 This protocol is a human-coordinated single-writer convention, not a distributed
 lock service. Never claim it detects another account's live activity automatically.

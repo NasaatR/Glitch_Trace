@@ -7,3 +7,6 @@
 /reference-private/
 __pycache__/
 *.pyc
+
+/vendor/
+/OFFLINE_SESSION.json

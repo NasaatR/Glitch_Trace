@@ -2,6 +2,14 @@
 
 ## Start and ownership
 
+**Archive mode:** if `OFFLINE_SESSION.json` exists, read docs/OFFLINE_WORK.md first.
+The user has selected work without GitHub for the receiving account. In this
+mode the archive is the starting source; skip remote fetch/push/claim requirements.
+Keep work/state durable locally and create a return ZIP only on explicit user
+request. Read the outer workspace's private AE preferences and supplied Playbook.
+Only the originating connected account integrates GitHub changes later.
+
+
 Read [docs/START_HERE.md](docs/START_HERE.md), then the current
 [PROJECT_STATE.md](PROJECT_STATE.md). Fetch the actual remote default branch before
 editing; stale chat context or a downloaded ZIP is not the current source.

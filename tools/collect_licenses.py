@@ -13,7 +13,8 @@ missing = []
 for p in lock['package']:
     if not p.get('source', '').startswith('registry+'): continue
     name = f"{p['name']}-{p['version']}"
-    candidates = list(cache.glob('*/'+name))
+    vendor = root/'vendor'/name
+    candidates = [vendor] if vendor.is_dir() else list(cache.glob('*/'+name))
     if not candidates:
         # Cargo fetch --locked ensures target-specific packages are present too.
         raise SystemExit('Missing locked dependency source: '+name)

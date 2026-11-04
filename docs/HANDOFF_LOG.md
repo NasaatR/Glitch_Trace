@@ -48,3 +48,20 @@ Dates below use the user's Europe/Moscow calendar date.
   the first evidence-grounded fix; if no AE is accessible, continue independent
   baseline work while collecting the specific missing host/reference evidence.
 - Session: ready for next session; owner none.
+
+## 2026-11-04 — Archive-only receiving account — Originating session
+
+- Observed base: 55830422f39282aeb482afd0b094f10f89a94bc8.
+- User steering: receiving account has no GitHub connection; originating account
+  owns repository integration. Receiving agent works independently with the user
+  and exports a full return archive only on explicit request.
+- Work: offline-mode guidance, standalone Windows build/package script, vendored
+  dependency support and request-only archive helper with change/deletion report.
+  Private transfer includes original AEX, released binaries and AE/user guidance;
+  these private materials are not committed to public GitHub.
+- Checks: request-only/source/exclusion/archive roundtrip tests are run locally;
+  Windows vendored build/install validation is pending the new workflow run.
+- Limits: archive mode removes GitHub access, not the real Windows compiler/host
+  requirement. No new product runtime/version or user release is claimed.
+- Next: originating agent verifies pipeline/package and finalizes the archive;
+  incoming agent then starts M0 and maintains state without automatic return ZIPs.

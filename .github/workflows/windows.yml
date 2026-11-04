@@ -20,58 +20,17 @@ jobs:
           rustup update stable --no-self-update
           rustup default stable
           rustup component add clippy rustfmt
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-      - name: Test CPU renderer
-        run: cargo test --locked
-      - name: Check native adapter
-        run: cargo clippy --locked --all-targets -- -D warnings
-      - name: Build Windows x64 binaries
-        run: cargo build --release --locked
-      - name: Stage and verify plugin
+      - name: Check request-only archive roundtrip
+        run: python tests/test_handoff_pack.py
+      - name: Prepare vendored dependency check
         shell: pwsh
         run: |
-          New-Item dist -ItemType Directory -Force | Out-Null
-          Copy-Item target/release/glitchtrace.dll dist/GlitchTrace.aex
-          Copy-Item target/release/glitchtrace-diagnostics.exe dist/
-          python tools/verify_pe.py dist/GlitchTrace.aex
+          cargo vendor --locked --versioned-dirs vendor | Out-Null
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          cargo fetch --locked
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/collect_licenses.py
-      - name: Build installer
+          Add-Content .cargo/config.toml "`n[source.crates-io]`nreplace-with = 'vendored-sources'`n[source.vendored-sources]`ndirectory = 'vendor'"
+      - name: Build and test without GitHub or dependency downloads
         shell: pwsh
-        run: |
-          & 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' installer/GlitchTrace.iss
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Check DLL dependencies and installer lifecycle
-        shell: pwsh
-        run: |
-          python tools/check_windows_load.py dist/GlitchTrace.aex
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $setup = (Resolve-Path dist/*_setup.exe).Path
-          $installDir = Join-Path $env:RUNNER_TEMP 'GlitchTrace-install-check'
-          $args = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-',"/DIR=$installDir")
-          $first = Start-Process $setup -ArgumentList $args -Wait -PassThru
-          if ($first.ExitCode -ne 0) { throw "Install failed: $($first.ExitCode)" }
-          $expected = (Get-FileHash dist/GlitchTrace.aex).Hash
-          if ((Get-FileHash "$installDir/GlitchTrace.aex").Hash -ne $expected) { throw 'Installed binary differs' }
-          $second = Start-Process $setup -ArgumentList $args -Wait -PassThru
-          if ($second.ExitCode -ne 0) { throw "Reinstall failed: $($second.ExitCode)" }
-          $backups = @(Get-ChildItem "$installDir/Backups/*.aex.bak")
-          if ($backups.Count -ne 1 -or (Get-FileHash $backups[0]).Hash -ne $expected) { throw 'Backup failed' }
-          $remove = Start-Process "$installDir/unins000.exe" -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
-          if ($remove.ExitCode -ne 0 -or (Test-Path "$installDir/GlitchTrace.aex")) { throw 'Uninstall failed' }
-          if (-not (Test-Path $backups[0])) { throw 'Uninstall deleted retained backup' }
-      - name: Build portable package and checksums
-        shell: pwsh
-        run: |
-          Copy-Item README.md,LICENSE,THIRD_PARTY_NOTICES.md dist/
-          Copy-Item docs dist/docs -Recurse
-          Copy-Item PROJECT_STATE.md dist/
-          $files = @('dist/GlitchTrace.aex','dist/glitchtrace-diagnostics.exe','dist/README.md','dist/LICENSE','dist/THIRD_PARTY_NOTICES.md','dist/docs','dist/PROJECT_STATE.md','dist/third-party-licenses')
-          Compress-Archive -Path $files -DestinationPath dist/GlitchTrace_v1.0-preview.1_windows-x64_portable.zip
-          Get-FileHash dist/*.exe,dist/*.aex,dist/*.zip -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" } | Set-Content dist/SHA256SUMS.txt
+        run: ./tools/Build-Windows.ps1 -Offline -RunInstallerChecks
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: GlitchTrace_v1.0-preview.1_windows-x64
@@ -79,6 +38,7 @@ jobs:
             dist/*_setup.exe
             dist/*_portable.zip
             dist/SHA256SUMS.txt
+            dist/BUILD_REPORT.json
           if-no-files-found: error
       - name: Publish first preview
         shell: pwsh
