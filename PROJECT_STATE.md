@@ -10,7 +10,7 @@ visibility. Default branch: main. Initial repository base: eabdb4d9b5ee945801d61
 
 ## Sequential session handoff
 
-- Status: **preparing archive-only handoff**.
+- Status: **ready for archive-only session**.
 - Current route: originating account handles GitHub; receiving account works from a private archive without GitHub. One writer at a time.
 - Observed source head before this documentation handoff:
   aff2c833adb03ec35cc0a71ecb654b2e1822cfc7.
@@ -71,8 +71,16 @@ Standalone Windows build/test/package script: tools/Build-Windows.ps1. Cargo sou
 can be vendored for a no-download build; a real Windows Rust/MSVC/Inno environment
 is still required. The receiving agent must not relabel an old installer as a new
 build if that environment is missing. Request-only return helper:
-tools/Pack-Return.py. GitHub CI is being used by the originating account to verify
-the same standalone pipeline; final results must be recorded after that run.
+tools/Pack-Return.py. The same standalone pipeline passed Windows CI with vendored
+dependencies and Cargo offline: format/core tests/clippy, target link, PE/PiPL,
+LoadLibrary, setup/reinstall/backup/uninstall and package/report generation.
+Validation source: f279674c38fa15b4a975745e41bf2649ac9f138f.
+Workflow: https://github.com/NasaatR/Glitch_Trace/actions/runs/41883545388.
+Three request-only archive tests also passed. Local empty-Cargo-home core tests
+passed offline; all 76 vendor packages / 3220 dependency-file checksums verified.
+The transfer's source files, private preferences/reference and package inventory
+are recorded in its own manifest, not published together to GitHub. The existing
+Preview 1 user release remains unchanged; this work adds build/handoff support.
 
 ## Next action
 

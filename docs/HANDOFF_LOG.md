@@ -59,9 +59,16 @@ Dates below use the user's Europe/Moscow calendar date.
   dependency support and request-only archive helper with change/deletion report.
   Private transfer includes original AEX, released binaries and AE/user guidance;
   these private materials are not committed to public GitHub.
-- Checks: request-only/source/exclusion/archive roundtrip tests are run locally;
-  Windows vendored build/install validation is pending the new workflow run.
+- Checks: three request-only/source/exclusion/archive roundtrip tests passed on
+  Linux and Windows; nine core tests passed with an empty Cargo home and vendored
+  sources. All 76 packages / 3220 dependency-file hashes verified. The standalone
+  Windows offline pipeline passed native build/PE/load/install/reinstall/backup/
+  uninstall/package/report checks on Windows Server 2025.
+  [Workflow](https://github.com/NasaatR/Glitch_Trace/actions/runs/41883545388), source
+  f279674c38fa15b4a975745e41bf2649ac9f138f. A first report-generation failure was
+  corrected with explicit PowerShell Select-String -Path/-Pattern binding.
 - Limits: archive mode removes GitHub access, not the real Windows compiler/host
   requirement. No new product runtime/version or user release is claimed.
-- Next: originating agent verifies pipeline/package and finalizes the archive;
-  incoming agent then starts M0 and maintains state without automatic return ZIPs.
+- Next: incoming agent starts M0 from the private workspace, follows supplied
+  preferences, and maintains source/state without automatic return ZIPs.
+- Session: ready for archive-only session; originating GitHub runtime work paused.
